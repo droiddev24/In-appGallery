@@ -1,15 +1,25 @@
 package org.droid.controller;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
 public class Utils {
 
+	/**
+	 * Returns the bitmap with given width and height from the path
+	 * @param path path of image
+	 * @param reqWidth width required
+	 * @param reqHeight height required
+	 * @return bitmap
+	 */
 	public static Bitmap decodeSampledBitmapFromUri(String path, int reqWidth, int reqHeight) {
 
 		Bitmap bm = null;
@@ -25,7 +35,13 @@ public class Utils {
 		options.inJustDecodeBounds = false;
 		bm = BitmapFactory.decodeFile(path, options); 
 
-		return bm;   
+		return bm;
+	}
+	
+	public static Bitmap getThumbFromUri(String path) throws IOException{
+		ExifInterface exif = new ExifInterface(path);
+		byte[] imageData=exif.getThumbnail();
+		return BitmapFactory.decodeByteArray(imageData,0,imageData.length);
 	}
 
 	public static Bitmap getSquareBitmap(Bitmap srcBitmap){

@@ -2,7 +2,8 @@ package org.droid.model;
 
 public class ImageInfo {
 	
-	String imagePath="";
+	private boolean selected=false;
+	private String imagePath="";
 
 	public String getImagePath() {
 		return imagePath;
@@ -10,6 +11,14 @@ public class ImageInfo {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 	
 }

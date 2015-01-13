@@ -27,8 +27,8 @@ public class AssetGetter {
 		if(cursor.moveToFirst()){
 			do{
 				ImageInfo imageInfo=new ImageInfo();
-				// Get the column index of the thumbnails Image ID
-				int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+				// Get the column index of the image
+				int columnIndex = cursor.getColumnIndexOrThrow(projection[0]);
 				//get the path of image from column index and put it into model class
 				imageInfo.setImagePath(cursor.getString(columnIndex));
 				imageList.add(imageInfo);

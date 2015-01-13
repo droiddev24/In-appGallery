@@ -1,25 +1,32 @@
 package org.droid.view.adapter;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.droid.controller.Utils;
 import org.droid.model.ImageInfo;
 import org.droid.samplegallery.R;
+import org.droid.view.activities.GalleryActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class GalleryAdapter extends BaseAdapter {
 	
 	private Context context;
 	
+	private boolean isSelectionModeOn=false;
+	private ArrayList<String> selectedImagePaths=new ArrayList<String>();
 	private ArrayList<ImageInfo> imageList=new ArrayList<ImageInfo>();
 	
 	public GalleryAdapter(Context context, ArrayList<ImageInfo> imageList) {
@@ -29,40 +36,46 @@ public class GalleryAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return imageList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		// TODO Auto-generated method stub
 		return imageList.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		// TODO Auto-generated method stub
 		return imageList.indexOf(imageList.get(position));
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		ViewHolder viewHolder;
+		final ViewHolder viewHolder;
 		if(convertView==null){
 			LayoutInflater mInflater=(LayoutInflater)context.getSystemService
 					(Activity.LAYOUT_INFLATER_SERVICE);
 			convertView=mInflater.inflate(R.layout.layout_gallery, parent, false);
 			viewHolder=new ViewHolder();
 			viewHolder.imageIv=(ImageView)convertView.findViewById(R.id.iv_image);
+			viewHolder.selectedTv=(TextView)convertView.findViewById(R.id.tv_selected);
 			convertView.setTag(viewHolder);
 		}
 		else{
 			viewHolder=(ViewHolder) convertView.getTag();
 		}
 		
+		final ImageInfo imageInfo=(ImageInfo)getItem(position);
+		
+		if(imageInfo.isSelected()){
+			viewHolder.selectedTv.setVisibility(View.VISIBLE);
+		}
+		else{
+			viewHolder.selectedTv.setVisibility(View.GONE);
+		}
+		
 		Bitmap galleryThumbBm=Utils.decodeSampledBitmapFromUri
-				(imageList.get(position).getImagePath(), 200, 200);
+				(imageInfo.getImagePath(), 200, 200);
 		
 		int requiredImageWidth=Utils.getScreenWidth(context)/4;
 		
@@ -71,11 +84,54 @@ public class GalleryAdapter extends BaseAdapter {
 		viewHolder.imageIv.setLayoutParams(imageParams);
 		viewHolder.imageIv.setImageBitmap(Utils.getSquareBitmap(galleryThumbBm));
 		
+		convertView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Bitmap selectedBmp=Utils.decodeSampledBitmapFromUri
+						(imageInfo.getImagePath(), 200, 200);
+				((GalleryActivity)context).selectedImageIv.setImageBitmap(Utils.getSquareBitmap(selectedBmp));
+				if(isSelectionModeOn){
+					if(imageInfo.isSelected()){
+						imageInfo.setSelected(false);
+						selectedImagePaths.remove(imageInfo.getImagePath());
+						viewHolder.selectedTv.setVisibility(View.GONE);
+					}
+					else{
+						imageInfo.setSelected(true);
+						selectedImagePaths.add(imageInfo.getImagePath());
+						viewHolder.selectedTv.setVisibility(View.VISIBLE);
+					}
+					if(selectedImagePaths.isEmpty()){
+						isSelectionModeOn=false;
+					}
+				}
+			}
+		});
+		
+		convertView.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				if(isSelectionModeOn){
+					//we don't have to do anything in long click, while selection mode is turned on
+				}
+				else{
+					isSelectionModeOn=true;
+					selectedImagePaths.add(imageInfo.getImagePath());
+					imageInfo.setSelected(true);
+					viewHolder.selectedTv.setVisibility(View.VISIBLE);
+				}
+				return true;
+			}
+		});
+		
 		return convertView;
 	}
 	
 	private class ViewHolder{
-		ImageView imageIv;
+		private ImageView imageIv;
+		private TextView selectedTv;
 	}
 
 	public ArrayList<ImageInfo> getImageList() {
@@ -83,7 +139,7 @@ public class GalleryAdapter extends BaseAdapter {
 	}
 
 	public void setImageList(ArrayList<ImageInfo> imageList) {
-		this.imageList = imageList;
+		this.imageList = Objects.requireNonNull(imageList, "List cannot be null");
 	}
 
 }
