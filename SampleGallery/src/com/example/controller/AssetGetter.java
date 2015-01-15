@@ -1,8 +1,8 @@
-package org.droid.controller;
+package com.example.controller;
 
 import java.util.ArrayList;
 
-import org.droid.model.ImageInfo;
+import com.example.model.ImageInfo;
 
 import android.app.Activity;
 import android.content.Context;

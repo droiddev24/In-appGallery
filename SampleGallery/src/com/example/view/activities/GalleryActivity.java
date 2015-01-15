@@ -1,8 +1,9 @@
-package org.droid.view.activities;
+package com.example.view.activities;
 
-import org.droid.controller.AssetGetter;
-import org.droid.samplegallery.R;
-import org.droid.view.adapter.GalleryAdapter;
+import com.example.samplegallery.R;
+
+import com.example.controller.AssetGetter;
+import com.example.view.adapter.GalleryAdapter;
 
 import android.content.Context;
 import android.os.Bundle;

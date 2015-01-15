@@ -1,12 +1,13 @@
-package org.droid.view.adapter;
+package com.example.view.adapter;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.droid.controller.Utils;
-import org.droid.model.ImageInfo;
-import org.droid.samplegallery.R;
-import org.droid.view.activities.GalleryActivity;
+import com.example.samplegallery.R;
+
+import com.example.controller.Utils;
+import com.example.model.ImageInfo;
+import com.example.view.activities.GalleryActivity;
 
 import android.app.Activity;
 import android.content.Context;

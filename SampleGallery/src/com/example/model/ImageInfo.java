@@ -1,4 +1,4 @@
-package org.droid.model;
+package com.example.model;
 
 public class ImageInfo {
 	
